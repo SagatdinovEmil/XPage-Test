@@ -76,9 +76,7 @@ def upload_image(request):
             image = request.FILES['image']
             fs = FileSystemStorage()
             filename = fs.save(image.name, image)
-            print(filename)
             image_path = fs.url(filename)
-            print(image_path)
             img_for_model = Image.open(image)
             img_for_model = transform(img_for_model)
             img_for_model = img_for_model.unsqueeze(0)
