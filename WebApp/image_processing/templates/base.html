@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}XPageTest{% endblock %}</title>
+    <style>
+        /* Стили для body и общих элементов */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .menu {
+            background-color: #0074d9;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        .menu-button {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #0074d9;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Дополнительные стили могут быть добавлены сюда */
+        
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <div class="menu">
+        <a href="/" class="menu-button">Добавить изображение</a>
+        <a href="results/" class="menu-button">Результаты распознавания</a>
+    </div>
+    <div class="content">
+        {% block content %} ПУСТО {% endblock %}
+    </div>
+</body>
+</html>

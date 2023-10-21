@@ -1,14 +1,104 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Загрузить изображение</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}Загрузка изображения{% endblock %}
+{% block style %}
+<style>
+    .container {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .upload-form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .custom-file-upload {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #0074d9;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s;
+    }
+
+    .custom-file-upload:hover {
+        background-color: #0056b3;
+    }
+
+    .input-file {
+        display: none;
+    }
+
+    .submit-button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #0074d9;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s;
+    }
+
+    .submit-button:hover {
+        background-color: #0056b3;
+    }
+
+    
+    .image-preview {
+        margin-top: 20px;
+        display: none;
+    }
+
+    .image-preview img {
+        max-width: 100%;
+        max-height: 200px;
+        margin-top: 10px;
+    }
+</style>
+{% endblock  %}
+
+{% block content %}
+<div class="container">
     <h1>Загрузите изображение</h1>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="upload-form">
         {% csrf_token %}
-        <input type="file" name="image">
-        <input type="submit" value="Загрузить">
+        <label for="image" class="custom-file-upload">
+            Выбрать файл
+        </label>
+        <input type="file" name="image" id="image" class="input-file" onchange="previewImage()">
+        <input type="submit" value="Загрузить" class="submit-button">
+        <div id="image-preview" class="image-preview">
+            <img src="" alt="Предварительный просмотр">
+        </div>
     </form>
-</body>
-</html>
+    {% if animal %}
+        <h1>На изображении находится {{animal}}</h1>
+    {% endif %}
+</div>
+<script>
+    function previewImage() {
+        var input = document.getElementById('image');
+        var preview = document.getElementById('image-preview');
+        var file = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            preview.style.display = 'block';
+            preview.querySelector('img').src = e.target.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+</script>
+{% endblock content %}

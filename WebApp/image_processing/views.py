@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponseNotFound
 from .models import Images
 import torch
 import torch.nn as nn
@@ -84,15 +85,18 @@ def upload_image(request):
             img_for_model = img_for_model.unsqueeze(0)
             with torch.no_grad():
                 predicted_class = model.predict(img_for_model)
+            if predicted_class == 1:
+                animal = "собака"
+            else:
+                animal = "кот"
             Images.objects.create(image=filename, predicted_class=predicted_class)
+            return render(request, 'upload_image.html', {'animal': animal})
         except Exception as e:
             print(e)
-
-
+    
     return render(request, 'upload_image.html')
 
 
 def view_results(request):
     results = Images.objects.all()
-    print()
     return render(request, 'view_results.html', {'results': results})
