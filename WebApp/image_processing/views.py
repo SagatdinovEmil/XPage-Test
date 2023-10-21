@@ -12,45 +12,52 @@ class Model(nn.Module):
     def __init__(self):
         super().__init__()
         self.conv1 = nn.Sequential(
-            nn.Conv2d(3,32,3),
-            nn.Dropout(0.2), # Добавляем Dropout, чтобы избежать переобучения
-            nn.ReLU(),
-            # Испоьзуем AvgPool, чтобы уменьшить размер изображения и 
-            # уменьшить требуемое количество вычислительных ресурсов
+            nn.Conv2d(3,64,9),
+            nn.Dropout(0.2),
+            nn.LeakyReLU(0.1),
             nn.AvgPool2d(2,2)
             )
         
         self.conv2 = nn.Sequential(
-            nn.Conv2d(32,64,3),
+            nn.Conv2d(64,128,7),
             nn.Dropout(0.2),
-            nn.ReLU(),
+            nn.LeakyReLU(0.1),
             nn.AvgPool2d(2,2)
             )
         
         self.conv3 = nn.Sequential(
-            nn.Conv2d(64,128,3),
+            nn.Conv2d(128,256,5),
             nn.Dropout(0.2),
-            nn.ReLU(),
+            nn.LeakyReLU(0.1),
             nn.AvgPool2d(2,2)
             )
+        
+        self.conv4 = nn.Sequential(
+            nn.Conv2d(256,512,3),
+            nn.Dropout(0.2),
+            nn.LeakyReLU(0.1),
+            nn.AvgPool2d(2,2)
+            )
+        
             
         self.fc1 = nn.Sequential(
         nn.Flatten(),
-        nn.Linear(128*13*13, 256),
+        nn.Linear(512*4*4,256),
         nn.Dropout(0.2),
-        nn.ReLU(),
-        nn.Linear(256, 128),
+        nn.LeakyReLU(0.1),
+        nn.Linear(256,128),
         nn.Dropout(0.2),
-        nn.ReLU(),
+        nn.LeakyReLU(0.1),
         nn.Linear(128,1),
         )
         
         self.act = nn.Sigmoid()
 
-    def forward(self, x):
+    def forward(self,x):
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
+        x = self.conv4(x)
         x = self.fc1(x)
         x = self.act(x)
         return x
@@ -61,7 +68,7 @@ class Model(nn.Module):
 model = Model()
 # Загрузим модель для дальнейшей работы
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-checkpoint = torch.load("image_processing/Model.pth", map_location=device)
+checkpoint = torch.load("Model.pth", map_location=device)
 model.load_state_dict(checkpoint["model_state_dict"])
 model.eval()
 transform = transforms.Compose([
